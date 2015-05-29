@@ -20,7 +20,7 @@ use ZendPdf\Resource\Font\Simple\Standard\HelveticaBold;
 use ZendPdf\Resource\Image\ImageFactory;
 use Media_Info;
 
-abstract class Document {
+abstract class Base {
 
 	protected $_template;
 
