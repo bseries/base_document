@@ -23,6 +23,8 @@ use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
  */
 class Invoice extends \base_document\document\BaseFinancial {
 
+	protected $_template = 'invoice';
+
 	protected function _compileHeaderFooter() {
 		extract(Message::aliases());
 

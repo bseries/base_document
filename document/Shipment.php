@@ -12,7 +12,7 @@
 
 namespace base_document\document;
 
-class Shipment extends \base_document\document\Invoice {
+class Shipment extends \base_document\document\BaseFinancial {
 
 	protected $_template = 'shipment';
 }
