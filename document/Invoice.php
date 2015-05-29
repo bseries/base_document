@@ -12,9 +12,11 @@
 
 namespace app\extensions\pdf;
 
-use lithium\g11n\Message;
 use IntlDateFormatter;
-use NumberFormatter;
+use lithium\g11n\Message;
+use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
+use AD\Finance\Money\Monies;
+use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 
 abstract class InvoiceDocument extends \base_document\document\Base {
 
@@ -50,8 +52,8 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		parent::compile();
 
 		// Meta Data.
-		$this->_author($this->_senderContact['name']);
-		$this->_creator($this->_senderContact['name']);
+		$this->_author($this->_senderContact['organization'] ?: $this->_senderContact['name']);
+		$this->_creator($this->_senderContact['organization'] ?: $this->_senderContact['name']);
 		$this->_subject($this->_subject);
 
 		/* Address field */
@@ -109,11 +111,12 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 			$this->_recipient->timezone
 		);
 
-		$text = sprintf(
-			$t('%s, the %s'),
-			$this->_senderContact['city'],
-			$formatter->format($this->_invoice->date())
-		);
+		$text = $t('{:city}, the {:date}', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale,
+			'city' => $this->_senderContact['locality'],
+			'date' => $formatter->format($this->_invoice->date())
+		]);
 		$this->_drawText($text, 'right', [
 			'offsetY' => 550
 		]);
@@ -127,19 +130,28 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		extract(Message::aliases());
 
 		$this->_setFont($this->_fontSize, true);
-		$this->_drawText($t('Client No.') . ': ' . $this->_recipient->number, 'left', [
+		$this->_drawText($t('Client No.: {:number}', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale,
+			'number' => $this->_recipient->number
+		]), 'left', [
 			'offsetY' => 528
 		]);
-		$this->_drawText($t('Invoice No.') . ': ' . $this->_invoice->number,  'left', [
+		$this->_drawText($t('Invoice No.: {:number}', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale,
+			'number' => $this->_invoice->number
+		]),  'left', [
 			'offsetY' => $this->_skipLines()
 		]);
 		$this->_setFont($this->_fontSize, false);
-		$this->_drawText('(Bitte bei Zahlung angeben)', 'left', [
-			'offsetY' => $this->_skipLines()
-		]);
 
-		if ($value = $this->_recipient->billing_vat_reg_no) {
-			$this->_drawText($t('Client VAT Reg No.') . ': ' . $value, 'left', [
+		if ($value = $this->_recipient->vat_reg_no) {
+			$this->_drawText($t('Client VAT Reg. No.: {:number}', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale,
+				'number' => $value
+			]), 'left', [
 				'offsetY' => $this->_skipLines()
 			]);
 		}
@@ -164,28 +176,39 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 	protected function _compileCostsTableHeader() {
 		extract(Message::aliases());
 
+		$showNet = in_array($this->_recipient->role, ['merchant', 'admin']);
 		$this->_currentHeight = 435;
 
 		$this->_setFont(11, true);
 
-		$this->_drawText($t('Description'), 'left', [
+		$this->_drawText($t('Description', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'left', [
 			'width' => 300,
 			'offsetX' => $offsetX = 0
 		]);
-		$this->_drawText($t('Quantity'), 'right', [
+		$this->_drawText($t('Quantity', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'right', [
 			'width' => 100,
 			'offsetX' => $offsetX += 300
 		]);
-		$this->_drawText(
-			$t('Unit price'),
-			'right',
-			['offsetX' => $offsetX += 100, 'width' => 100]
-		);
-		$this->_drawText(
-			$t('Total price'),
-			'right',
-			['offsetX' => $offsetX += 100, 'width' => 100]
-		);
+		$this->_drawText($t('Unit Price', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'right', [
+			'offsetX' => $offsetX += 100,
+			'width' => 100
+		]);
+		$this->_drawText($t('Total', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'right', [
+			'offsetX' => $offsetX += 100,
+			'width' => 100
+		]);
 
 		$this->_currentHeight = $this->_skipLines();
 
@@ -197,7 +220,8 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 	protected function _compileCostsTablePosition($position) {
 		extract(Message::aliases());
 
-		$formatter = new NumberFormatter($this->_recipient->locale, NumberFormatter::CURRENCY);
+		$showNet = in_array($this->_recipient->role, ['merchant', 'admin']);
+		$moneyFormatter = new MoneyFormatter($this->_recipient->locale);
 
 		$this->_currentHeight = $this->_skipLines();
 
@@ -210,15 +234,14 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 			'offsetX' => $offsetX += 300
 		]);
 
-		$value = $position->amount()->getGross();
 		$this->_drawText(
-			$formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency()),
+			$moneyFormatter->format($showNet ? $position->amount()->getNet() : $position->amount()->getGross()),
 			'right',
 			['offsetX' => $offsetX += 100, 'width' => 100]
 		);
-		$value = $position->totalAmount()->getGross();
+		$value = $showNet ? $position->total()->getNet() : $position->total()->getGross();
 		$this->_drawText(
-			$formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency()),
+			$moneyFormatter->format($showNet ? $position->total()->getNet() : $position->total()->getGross()),
 			'right',
 			['offsetX' => $offsetX += 100, 'width' => 100]
 		);
@@ -234,41 +257,42 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 	protected function _compileCostsTableFooter() {
 		extract(Message::aliases());
 
-		$formatter = new NumberFormatter($this->_recipient->locale, NumberFormatter::CURRENCY);
-
+		$moniesFormatter = new MoniesFormatter($this->_recipient->locale);
 
 		$this->_setFont($this->_fontSize, true);
 
 		$this->_currentHeight = $this->_skipLines(3);
 		$this->_drawHorizontalLine();
 
-		$value = $this->_invoice->totalAmount();
 		$this->_currentHeight = $this->_skipLines();
 
-		$this->_drawText($t('Total (gross)'), 'left');
+		$this->_drawText($t('Total (net)', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'left');
 		$this->_drawText(
-			$formatter->formatCurrency($value->getGross()->getAmount() / 100, $value->getCurrency()),
+			$moniesFormatter->format($this->_invoice->totals()->getNet()),
 			'right',
 			['offsetX' => 500, 'width' => 100]
 		);
 
-		$this->_currentHeight = $this->_skipLines();
-		$value = $this->_invoice->totalAmount();
-		$this->_drawText($t('Total (net)'), 'left');
-		$this->_drawText(
-			$formatter->formatCurrency($value->getNet()->getAmount() / 100, $value->getCurrency()),
-			'right',
-			['offsetX' => 500, 'width' => 100]
-		);
+		foreach ($this->_invoice->taxes() as $rate => $monies) {
+			if ($rate === 0) {
+				continue;
+			}
+			$this->_currentHeight = $this->_skipLines();
 
-		$this->_currentHeight = $this->_skipLines();
-		$value = $this->_invoice->totalTax();
-		$this->_drawText($t('Tax ({:tax_rate}%)', $this->_invoice->data()), 'left');
-		$this->_drawText(
-			$formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency()),
-			'right',
-			['offsetX' => 500, 'width' => 100]
-		);
+			$this->_drawText($t('Tax ({:tax_rate}%)', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale,
+				'tax_rate' => $rate
+			]), 'left');
+			$this->_drawText(
+				$moniesFormatter->format($monies),
+				'right',
+				['offsetX' => 500, 'width' => 100]
+			);
+		}
 
 		$this->_setFont(11, true);
 
@@ -276,10 +300,12 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		$this->_drawHorizontalLine();
 		$this->_currentHeight = $this->_skipLines();
 
-		$value = $this->_invoice->totalAmount();
-		$this->_drawText($t('Invoice total'), 'left');
+		$this->_drawText($t('Grand Total', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]), 'left');
 		$this->_drawText(
-			$formatter->formatCurrency($value->getGross()->getAmount() / 100, $value->getCurrency()),
+			$moniesFormatter->format($this->_invoice->totals()->getGross()),
 			'right',
 			['offsetX' => 500, 'width' => 100]
 		);
@@ -289,14 +315,17 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		$this->_currentHeight = $this->_skipLines(2.5);
 		$this->_drawText($this->_invoice->tax_note);
 
+		$this->_currentHeight = $this->_skipLines(1);
+		$this->_drawText($this->_invoice->terms);
+
 		$this->_currentHeight = $this->_skipLines(2);
 		$this->_drawText($this->_invoice->note);
 
 		$this->_currentHeight = $this->_skipLines(2);
-		$this->_drawText($this->_invoice->terms);
-
-		$this->_currentHeight = $this->_skipLines();
-		$text = $t("This invoice has been automatically generated and is valid even without a signature.");
+		$text = $t("This invoice has been automatically generated and is valid even without a signature.", [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale
+		]);
 		$this->_drawText($text);
 	}
 }
