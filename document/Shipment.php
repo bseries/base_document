@@ -12,13 +12,14 @@
 
 namespace base_document\document;
 
+use IntlDateFormatter;
+use lithium\g11n\Message;
+
 class Shipment extends \base_document\document\BaseFinancial {
 
 	protected $_template = 'shipment';
 
 	protected function _compileHeaderFooter() {
-		extract(Message::aliases());
-
 		$backupHeight = $this->_currentHeight;
 		$backup = $this->_borderHorizontal;
 
@@ -156,7 +157,7 @@ class Shipment extends \base_document\document\BaseFinancial {
 			'locale' => $this->_recipient->locale
 		]), 'right', [
 			'width' => 100,
-			'offsetX' => $offsetX += 100
+			'offsetX' => $offsetX += 500
 		]);
 
 		$this->_currentHeight = $this->_skipLines();
@@ -177,7 +178,7 @@ class Shipment extends \base_document\document\BaseFinancial {
 		]);
 		$this->_drawText((integer) $position->quantity, 'right', [
 			'width' => 100,
-			'offsetX' => $offsetX += 100
+			'offsetX' => $offsetX += 500
 		]);
 
 		// Page break; redraw costs table header.

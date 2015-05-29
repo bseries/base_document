@@ -73,7 +73,7 @@ abstract class BaseFinancial extends \base_document\document\Base {
 		/* Financial Table */
 		$this->_compileTableHeader();
 
-		foreach ($this->_invoice->positions() as $position) {
+		foreach ($this->_entity->positions() as $position) {
 			$this->_compileTablePosition($position);
 		}
 		$this->_compileTableFooter();
