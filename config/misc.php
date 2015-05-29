@@ -16,8 +16,8 @@ use lithium\core\Libraries;
 // Libraries::locate('document.billing').
 Libraries::paths([
 	'document' => [
-		'{:library}\extensions\document\{:class}\{:name}',
-		'{:library}\extensions\document\{:name}'
+		'{:library}\extensions\document\{:name}',
+		'{:library}\document\{:name}' => ['libraries' => 'base_document']
 	]
 ]);
 

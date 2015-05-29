@@ -40,22 +40,11 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$this->_borderHorizontal = [33, 33];
 		$this->_currentHeight = 800;
 
-		$this->_drawText($this->_sender['name'], 'right');
-		$this->_drawText($this->_sender['street_address'], 'right', [
-			'offsetY' => $this->_skipLines()
-		]);
-		$this->_drawText($this->_sender['postal_code'] . ' ' . $this->_sender['city'], 'right', [
-			'offsetY' => $this->_skipLines()
-		]);
-		$this->_drawText($this->_sender['country'], 'right', [
-			'offsetY' => $this->_skipLines()
-		]);
-		$this->_drawText($this->_sender['phone'], 'right', [
-			'offsetY' => $this->_skipLines(2)
-		]);
-		$this->_drawText($this->_sender['email'], 'right', [
-			'offsetY' => $this->_skipLines()
-		]);
+		foreach (explode("\n", $this->_sender->address()->format('postal')) as $key => $line) {
+			$this->_drawText($line, 'right', [
+				'offsetY' => $key ? $this->_skipLines() : $this->_currentHeight
+			]);
+		}
 
 		$this->_currentHeight = 90;
 
@@ -124,7 +113,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$text = $t('{:city}, the {:date}', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
-			'city' => $this->_sender['locality'],
+			'city' => $this->_sender->address()->locality,
 			'date' => $formatter->format($this->_invoice->date())
 		]);
 		$this->_drawText($text, 'right', [

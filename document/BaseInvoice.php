@@ -12,7 +12,7 @@
 
 namespace base_document\document;
 
-abstract class BaseFinancial extends \base_document\document\Base {
+abstract class BaseInvoice extends \base_document\document\Base {
 
 	protected $_invoice;
 
@@ -30,8 +30,8 @@ abstract class BaseFinancial extends \base_document\document\Base {
 		parent::compile();
 
 		// Meta Data.
-		$this->_author($this->_sender['organization'] ?: $this->_sender['name']);
-		$this->_creator($this->_sender['organization'] ?: $this->_sender['name']);
+		$this->_author($this->_sender->name);
+		$this->_creator($this->_sender->name);
 		$this->_subject($this->_subject);
 
 		/* Address field */
