@@ -13,6 +13,7 @@
 namespace base_document\document;
 
 use BadMethodCallException;
+use lithium\core\Libraries;
 use lithium\analysis\Logger;
 use ZendPdf\PdfDocument;
 use ZendPdf\Resource\Font\Simple\Standard\Helvetica;
@@ -22,7 +23,7 @@ use Media_Info;
 
 abstract class Base {
 
-	protected $_template = 'blank.pdf';
+	protected $_template = 'blank';
 
 	protected $_fontSize = 10;
 
@@ -54,8 +55,7 @@ abstract class Base {
 	public function compile() {
 		Logger::write('debug', 'Compiling document.');
 
-		$this->__pdf = PdfDocument::load($this->_template);
-
+		$this->__pdf = $this->_loadTemplate();
 		$this->__page = $this->__pdf->pages[0];
 		$this->_setFont($this->_fontSize);
 		$this->_compileHeaderFooter();
@@ -64,6 +64,19 @@ abstract class Base {
 		// that from now on we don't have to insert header/footer
 		// on each new page.
 		$this->__pageTemplate = clone $this->__page;
+	}
+
+	protected function _loadTemplate() {
+		$files = [
+			Libraries::get('app', 'resources') . '/document/' . $this->_template . '.pdf',
+			Libraries::get('base_document', 'resources') . '/document/' . $this->_template . '.pdf'
+		];
+		foreach ($files as $file) {
+			if (file_exists($file)) {
+				return PdfDocument::load($file);
+			}
+		}
+		throw new Exception("No document template `{$this->_template}` found.");
 	}
 
 	// Always use temporary file to get arround mem limit.
