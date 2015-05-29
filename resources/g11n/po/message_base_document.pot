@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: base_document 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-05-29 15:39+0200\n"
+"POT-Creation-Date: 2015-05-29 17:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,72 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: document/Invoice.php:52
+#: document/Invoice.php:46
 msgid "{:number} — VAT Reg. No."
 msgstr ""
 
-#: document/Invoice.php:59
+#: document/Invoice.php:53
 msgid "{:number} — Tax No."
 msgstr ""
 
-#: document/Invoice.php:72
+#: document/Invoice.php:66
 msgid "Bank Account"
 msgstr ""
 
-#: document/Invoice.php:81
+#: document/Invoice.php:75
 msgid "{:email} — PayPal"
 msgstr ""
 
-#: document/Invoice.php:113
+#: document/Invoice.php:107 document/Shipment.php:61
 msgid "{:city}, the {:date}"
 msgstr ""
 
-#: document/Invoice.php:145
+#: document/Invoice.php:139 document/Shipment.php:93
 msgid "{:number} — Client No."
 msgstr ""
 
-#: document/Invoice.php:152
+#: document/Invoice.php:146
 msgid "{:number} — Invoice No."
 msgstr ""
 
-#: document/Invoice.php:161
+#: document/Invoice.php:155
 msgid "{:number} — Client VAT Reg. No."
 msgstr ""
 
-#: document/Invoice.php:187
+#: document/Invoice.php:181 document/Shipment.php:123
 msgid "Dear {:name},"
 msgstr ""
 
-#: document/Invoice.php:212
+#: document/Invoice.php:206 document/Shipment.php:148
 msgid "Description"
 msgstr ""
 
-#: document/Invoice.php:219
+#: document/Invoice.php:213 document/Shipment.php:155
 msgid "Quantity"
 msgstr ""
 
-#: document/Invoice.php:226
+#: document/Invoice.php:220
 msgid "Unit Price"
 msgstr ""
 
-#: document/Invoice.php:233
+#: document/Invoice.php:227
 msgid "Total"
 msgstr ""
 
-#: document/Invoice.php:297
+#: document/Invoice.php:291
 msgid "Total (net)"
 msgstr ""
 
-#: document/Invoice.php:313
+#: document/Invoice.php:307
 msgid "Tax ({:tax_rate}%)"
 msgstr ""
 
-#: document/Invoice.php:331
+#: document/Invoice.php:325
 msgid "Grand Total"
 msgstr ""
 
-#: document/Invoice.php:350
+#: document/Invoice.php:344
 msgid ""
 "This invoice has been automatically generated and is valid even without a "
 "signature."
+msgstr ""
+
+#: document/Shipment.php:100
+msgid "{:number} — Shipment No."
 msgstr ""
