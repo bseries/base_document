@@ -27,9 +27,9 @@ class Invoice extends \base_document\document\BaseInvoice {
 
 	protected $_taxNo;
 
-	protected $_bankAccount;
+	protected $_bank = [];
 
-	protected $_paypalEmail;
+	protected $_paypal = [];
 
 	protected function _compileHeaderFooter() {
 		extract(Message::aliases());
@@ -64,11 +64,11 @@ class Invoice extends \base_document\document\BaseInvoice {
 				'offsetY' => $this->_skipLines()
 			]);
 		}
-		if ($this->_bankAccount) {
-			$text  = $this->_bankAccount['holder'] . ', ';
-			$text .= $this->_bankAccount['bank'] . ', ';
-			$text .= 'IBAN ' . $this->_bankAccount['iban'] . ', ';
-			$text .= 'BIC ' . $this->_bankAccount['bic'] . ' ';
+		if ($this->_bank) {
+			$text  = $this->_bank['holder'] . ', ';
+			$text .= $this->_bank['bank'] . ', ';
+			$text .= 'IBAN ' . $this->_bank['iban'] . ', ';
+			$text .= 'BIC ' . $this->_bank['bic'] . ' ';
 			$text .= '— ' . $t('Bank Account', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale
@@ -77,11 +77,11 @@ class Invoice extends \base_document\document\BaseInvoice {
 				'offsetY' => $this->_skipLines()
 			]);
 		}
-		if ($this->_paypalEmail) {
-			$this->_drawText($t('{:email} — PayPal.', [
+		if ($this->_paypal) {
+			$this->_drawText($t('{:email} — PayPal', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
-				'email' => $this->_paypalEmail,
+				'email' => $this->_paypal['email'],
 			]), 'right', [
 				'offsetY' => $this->_skipLines()
 			]);
