@@ -14,7 +14,7 @@ namespace base_document\document;
 
 abstract class BaseInvoice extends \base_document\document\Base {
 
-	protected $_template = 'blank_invoice';
+	protected $_template = 'invoice';
 
 	protected $_invoice;
 

@@ -12,6 +12,9 @@
 
 namespace base_document\document;
 
-class Shipment extends \base_document\document\Invoice {}
+class Shipment extends \base_document\document\Invoice {
+
+	protected $_template = 'shipment';
+}
 
 ?>
