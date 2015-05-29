@@ -142,25 +142,23 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$backup = $this->_borderHorizontal;
 		$this->_borderHorizontal = [33, 33];
 
-		$this->_setFont($this->_fontSize, true);
-		$this->_drawText($t('{:number} - Client No.', [
+		$this->_drawText($t('{:number} — Client No.', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
 			'number' => $this->_recipient->number
 		]), 'right', [
 			'offsetY' => 661
 		]);
-		$this->_drawText($t('{:number} - Invoice No.', [
+		$this->_drawText($t('{:number} — Invoice No.', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
 			'number' => $this->_invoice->number
 		]),  'right', [
 			'offsetY' => $this->_skipLines()
 		]);
-		$this->_setFont($this->_fontSize, false);
 
 		if ($value = $this->_recipient->vat_reg_no) {
-			$this->_drawText($t('{:number} - Client VAT Reg. No.', [
+			$this->_drawText($t('{:number} — Client VAT Reg. No.', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
 				'number' => $value
@@ -177,7 +175,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$this->_setFont($this->_fontSize, true);
 
 		$this->_drawText($this->_subject, 'left', [
-			'offsetY' => 550
+			'offsetY' => 540
 		]);
 		$this->_setFont($this->_fontSize);
 	}
