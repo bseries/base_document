@@ -21,7 +21,7 @@ use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 /**
  * An invoice document to be printed on a blank paper with no header/footer.
  */
-class Invoice extends \base_document\document\BaseInvoice {
+class Invoice extends \base_document\document\BaseFinancial {
 
 	protected function _compileHeaderFooter() {
 		extract(Message::aliases());
@@ -106,7 +106,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
 			'city' => $this->_sender->address()->locality,
-			'date' => $formatter->format($this->_invoice->date())
+			'date' => $formatter->format($this->_entity->date())
 		]);
 		$this->_drawText($text, 'right', [
 			'offsetY' => 560
@@ -144,7 +144,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$this->_drawText($t('{:number} — Invoice No.', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
-			'number' => $this->_invoice->number
+			'number' => $this->_entity->number
 		]),  'right', [
 			'offsetY' => $this->_skipLines()
 		]);
@@ -193,7 +193,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 	}
 
 	// 8.
-	protected function _compileCostsTableHeader() {
+	protected function _compileTableHeader() {
 		extract(Message::aliases());
 
 		$showNet = in_array($this->_recipient->role, ['merchant', 'admin']);
@@ -237,7 +237,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 	}
 
 	// 9.
-	protected function _compileCostsTablePosition($position) {
+	protected function _compileTablePosition($position) {
 		extract(Message::aliases());
 
 		$showNet = in_array($this->_recipient->role, ['merchant', 'admin']);
@@ -269,12 +269,12 @@ class Invoice extends \base_document\document\BaseInvoice {
 		// Page break; redraw costs table header.
 		if ($this->_currentHeight <= 250) {
 			$this->_nextPage();
-			$this->_compileCostsTableHeader();
+			$this->_compileTableHeader();
 		}
 	}
 
 	// 10.
-	protected function _compileCostsTableFooter() {
+	protected function _compileTableFooter() {
 		extract(Message::aliases());
 
 		$moniesFormatter = new MoniesFormatter($this->_recipient->locale);
@@ -291,12 +291,12 @@ class Invoice extends \base_document\document\BaseInvoice {
 			'locale' => $this->_recipient->locale
 		]), 'left');
 		$this->_drawText(
-			$moniesFormatter->format($this->_invoice->totals()->getNet()),
+			$moniesFormatter->format($this->_entity->totals()->getNet()),
 			'right',
 			['offsetX' => 500, 'width' => 100]
 		);
 
-		foreach ($this->_invoice->taxes() as $rate => $monies) {
+		foreach ($this->_entity->taxes() as $rate => $monies) {
 			if ($rate === 0) {
 				continue;
 			}
@@ -325,7 +325,7 @@ class Invoice extends \base_document\document\BaseInvoice {
 			'locale' => $this->_recipient->locale
 		]), 'left');
 		$this->_drawText(
-			$moniesFormatter->format($this->_invoice->totals()->getGross()),
+			$moniesFormatter->format($this->_entity->totals()->getGross()),
 			'right',
 			['offsetX' => 500, 'width' => 100]
 		);
@@ -333,10 +333,10 @@ class Invoice extends \base_document\document\BaseInvoice {
 		$this->_setFont($this->_fontSize);
 
 		$this->_currentHeight = $this->_skipLines(2.5);
-		$this->_drawText($this->_invoice->terms);
+		$this->_drawText($this->_entity->terms);
 
 		$this->_currentHeight = $this->_skipLines(2);
-		$this->_drawText($this->_invoice->note);
+		$this->_drawText($this->_entity->note);
 
 		$this->_currentHeight = $this->_skipLines(2);
 		$text = $t("This invoice has been automatically generated and is valid even without a signature.", [

@@ -12,13 +12,13 @@
 
 namespace base_document\document;
 
-abstract class BaseInvoice extends \base_document\document\Base {
+abstract class BaseFinancial extends \base_document\document\Base {
 
-	protected $_template = 'invoice';
+	protected $_template = 'blank';
 
-	protected $_invoice;
+	protected $_entity;
 
-	protected $_type = 'Invoice';
+	protected $_type;
 
 	protected $_subject;
 
@@ -51,7 +51,9 @@ abstract class BaseInvoice extends \base_document\document\Base {
 		$this->_compileRecipientAddressField();
 
 		/* Numbers and type of letter right */
-		$this->_compileType();
+		if ($this->_type) {
+			$this->_compileType();
+		}
 		$this->_compileNumbers();
 
 		/* Date and City */
@@ -68,13 +70,13 @@ abstract class BaseInvoice extends \base_document\document\Base {
 			$this->_compileIntro();
 		}
 
-		/* Costs Table */
-		$this->_compileCostsTableHeader();
+		/* Financial Table */
+		$this->_compileTableHeader();
 
 		foreach ($this->_invoice->positions() as $position) {
-			$this->_compileCostsTablePosition($position);
+			$this->_compileTablePosition($position);
 		}
-		$this->_compileCostsTableFooter();
+		$this->_compileTableFooter();
 	}
 
 	// 1.
@@ -99,13 +101,13 @@ abstract class BaseInvoice extends \base_document\document\Base {
 	abstract protected function _compileIntro();
 
 	// 8.
-	abstract protected function _compileCostsTableHeader();
+	abstract protected function _compileTableHeader();
 
 	// 9.
-	abstract protected function _compileCostsTablePosition($position);
+	abstract protected function _compileTablePosition($position);
 
 	// 10.
-	abstract protected function _compileCostsTableFooter();
+	abstract protected function _compileTableFooter();
 }
 
 ?>
