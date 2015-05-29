@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: base_document 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-05-29 15:35+0200\n"
+"POT-Creation-Date: 2015-05-29 15:39+0200\n"
 "PO-Revision-Date: 2015-05-29 15:39+0100\n"
 "Last-Translator: David Persson <davidpersson@gmx.de>\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr "{:number} — USt.-IdNr."
 msgid "{:number} — Tax No."
 msgstr "{:number} — Steuernr."
 
-#: document/Invoice.php:72 document/_Default.php:119 document/_Invoice.php:119
+#: document/Invoice.php:72
 msgid "Bank Account"
 msgstr "Bankkonto"
 
@@ -34,7 +34,7 @@ msgstr "Bankkonto"
 msgid "{:email} — PayPal"
 msgstr "{:email} — PayPal"
 
-#: document/Invoice.php:113 document/_InvoiceWithPaper.php:114
+#: document/Invoice.php:113
 msgid "{:city}, the {:date}"
 msgstr "{:city}, der {:date}"
 
@@ -54,40 +54,35 @@ msgstr "{:number} — Kunden USt.-IdNr."
 msgid "Dear {:name},"
 msgstr "Sehr geehrte/r {:name},"
 
-#: document/Invoice.php:212 document/_Default.php:234
-#: document/_Invoice.php:234 document/_InvoiceWithPaper.php:184
+#: document/Invoice.php:212
 msgid "Description"
 msgstr "Beschreibung"
 
-#: document/Invoice.php:219 document/_Default.php:238
-#: document/_Invoice.php:238 document/_InvoiceWithPaper.php:191
+#: document/Invoice.php:219
 msgid "Quantity"
 msgstr "Anzahl"
 
-#: document/Invoice.php:226 document/_InvoiceWithPaper.php:198
+#: document/Invoice.php:226
 msgid "Unit Price"
 msgstr "Einzelpreis"
 
-#: document/Invoice.php:233 document/_InvoiceWithPaper.php:205
+#: document/Invoice.php:233
 msgid "Total"
 msgstr "Summe"
 
-#: document/Invoice.php:297 document/_Default.php:316
-#: document/_Invoice.php:316 document/_InvoiceWithPaper.php:269
+#: document/Invoice.php:297
 msgid "Total (net)"
 msgstr "Summe (netto)"
 
-#: document/Invoice.php:313 document/_Default.php:327
-#: document/_Invoice.php:327 document/_InvoiceWithPaper.php:285
+#: document/Invoice.php:313
 msgid "Tax ({:tax_rate}%)"
 msgstr "Steuer ({:tax_rate}%)"
 
-#: document/Invoice.php:331 document/_InvoiceWithPaper.php:303
+#: document/Invoice.php:331
 msgid "Grand Total"
 msgstr "Gesamtsumme"
 
-#: document/Invoice.php:350 document/_Default.php:356
-#: document/_Invoice.php:356 document/_InvoiceWithPaper.php:325
+#: document/Invoice.php:350
 msgid ""
 "This invoice has been automatically generated and is valid even without a "
 "signature."
@@ -95,74 +90,14 @@ msgstr ""
 "Diese Rechnung wurde automatisch erzeugt und ist auch ohne Unterschrift "
 "gültig."
 
-#: document/_Default.php:107 document/_Invoice.php:107
-msgid "VAT Reg. No."
-msgstr "USt.-IdNr."
+#~ msgid "VAT Reg. No."
+#~ msgstr "USt.-IdNr."
 
-#: document/_Default.php:110 document/_Invoice.php:110
-msgid "Tax No."
-msgstr "Steuernr."
+#~ msgid "Tax No."
+#~ msgstr "Steuernr."
 
-#: document/_Default.php:125 document/_Invoice.php:125
-msgid "PayPal"
-msgstr "PayPal"
+#~ msgid "PayPal"
+#~ msgstr "PayPal"
 
-#: document/_Default.php:154 document/_Invoice.php:154
-#, php-format
-msgid "%s, the %s"
-msgstr "%s, der %s"
-
-#: document/_Default.php:184 document/_Invoice.php:184
-msgid "Client No."
-msgstr ""
-
-#: document/_Default.php:187 document/_Invoice.php:187
-msgid "Invoice No."
-msgstr ""
-
-#: document/_Default.php:192 document/_Invoice.php:192
-msgid "Client VAT Reg No."
-msgstr ""
-
-#: document/_Default.php:213 document/_Invoice.php:213
-#, php-format
-msgid "Dear %s,"
-msgstr ""
-
-#: document/_Default.php:243 document/_Invoice.php:243
-msgid "Unit price ({:type})"
-msgstr ""
-
-#: document/_Default.php:243 document/_Default.php:248
-#: document/_Invoice.php:243 document/_Invoice.php:248
-msgid "gross"
-msgstr ""
-
-#: document/_Default.php:243 document/_Default.php:248
-#: document/_Invoice.php:243 document/_Invoice.php:248
-msgid "net"
-msgstr ""
-
-#: document/_Default.php:248 document/_Invoice.php:248
-msgid "Total price ({:type})"
-msgstr ""
-
-#: document/_Default.php:305 document/_Invoice.php:305
-msgid "Total (gross)"
-msgstr ""
-
-#: document/_Default.php:338 document/_Invoice.php:338
-msgid "Total outstanding (gross)"
-msgstr ""
-
-#: document/_InvoiceWithPaper.php:133
-msgid "Client No.: {:number}"
-msgstr ""
-
-#: document/_InvoiceWithPaper.php:140
-msgid "Invoice No.: {:number}"
-msgstr ""
-
-#: document/_InvoiceWithPaper.php:150
-msgid "Client VAT Reg. No.: {:number}"
-msgstr ""
+#~ msgid "%s, the %s"
+#~ msgstr "%s, der %s"
