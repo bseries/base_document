@@ -18,7 +18,7 @@ abstract class BaseInvoice extends \base_document\document\Base {
 
 	protected $_type = 'Invoice';
 
-	protected $_subject = 'Your invoice';
+	protected $_subject;
 
 	protected $_recipient;
 
@@ -26,13 +26,24 @@ abstract class BaseInvoice extends \base_document\document\Base {
 
 	protected $_intro;
 
+	protected $_vatRegNo;
+
+	protected $_taxNo;
+
+	protected $_bank = [];
+
+	protected $_paypal = [];
+
 	public function compile() {
 		parent::compile();
 
 		// Meta Data.
 		$this->_author($this->_sender->name);
 		$this->_creator($this->_sender->name);
-		$this->_subject($this->_subject);
+
+		if ($this->_subject) {
+			$this->_subject($this->_subject);
+		}
 
 		/* Address field */
 		$this->_compileRecipientAddressField();
@@ -45,7 +56,9 @@ abstract class BaseInvoice extends \base_document\document\Base {
 		$this->_compileDateAndCity();
 
 		/* Subject */
-		$this->_compileSubject();
+		if ($this->_subject) {
+			$this->_compileSubject();
+		}
 
 		/* Intro Text */
 		if ($this->_intro) {

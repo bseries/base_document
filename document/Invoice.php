@@ -23,14 +23,6 @@ use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
  */
 class Invoice extends \base_document\document\BaseInvoice {
 
-	protected $_vatRegNo;
-
-	protected $_taxNo;
-
-	protected $_bank = [];
-
-	protected $_paypal = [];
-
 	protected function _compileHeaderFooter() {
 		extract(Message::aliases());
 
