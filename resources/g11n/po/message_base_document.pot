@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Atelier Disko
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: base_document 1.0\n"
+"Report-Msgid-Bugs-To: info@atelierdisko.de\n"
+"POT-Creation-Date: 2015-05-29 15:35+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: document/Invoice.php:52
+msgid "{:number} — VAT Reg. No."
+msgstr ""
+
+#: document/Invoice.php:59
+msgid "{:number} — Tax No."
+msgstr ""
+
+#: document/Invoice.php:72 document/_Default.php:119 document/_Invoice.php:119
+msgid "Bank Account"
+msgstr ""
+
+#: document/Invoice.php:81
+msgid "{:email} — PayPal"
+msgstr ""
+
+#: document/Invoice.php:113 document/_InvoiceWithPaper.php:114
+msgid "{:city}, the {:date}"
+msgstr ""
+
+#: document/Invoice.php:145
+msgid "{:number} — Client No."
+msgstr ""
+
+#: document/Invoice.php:152
+msgid "{:number} — Invoice No."
+msgstr ""
+
+#: document/Invoice.php:161
+msgid "{:number} — Client VAT Reg. No."
+msgstr ""
+
+#: document/Invoice.php:187
+msgid "Dear {:name},"
+msgstr ""
+
+#: document/Invoice.php:212 document/_Default.php:234
+#: document/_Invoice.php:234 document/_InvoiceWithPaper.php:184
+msgid "Description"
+msgstr ""
+
+#: document/Invoice.php:219 document/_Default.php:238
+#: document/_Invoice.php:238 document/_InvoiceWithPaper.php:191
+msgid "Quantity"
+msgstr ""
+
+#: document/Invoice.php:226 document/_InvoiceWithPaper.php:198
+msgid "Unit Price"
+msgstr ""
+
+#: document/Invoice.php:233 document/_InvoiceWithPaper.php:205
+msgid "Total"
+msgstr ""
+
+#: document/Invoice.php:297 document/_Default.php:316
+#: document/_Invoice.php:316 document/_InvoiceWithPaper.php:269
+msgid "Total (net)"
+msgstr ""
+
+#: document/Invoice.php:313 document/_Default.php:327
+#: document/_Invoice.php:327 document/_InvoiceWithPaper.php:285
+msgid "Tax ({:tax_rate}%)"
+msgstr ""
+
+#: document/Invoice.php:331 document/_InvoiceWithPaper.php:303
+msgid "Grand Total"
+msgstr ""
+
+#: document/Invoice.php:350 document/_Default.php:356
+#: document/_Invoice.php:356 document/_InvoiceWithPaper.php:325
+msgid ""
+"This invoice has been automatically generated and is valid even without a "
+"signature."
+msgstr ""
+
+#: document/_Default.php:107 document/_Invoice.php:107
+msgid "VAT Reg. No."
+msgstr ""
+
+#: document/_Default.php:110 document/_Invoice.php:110
+msgid "Tax No."
+msgstr ""
+
+#: document/_Default.php:125 document/_Invoice.php:125
+msgid "PayPal"
+msgstr ""
+
+#: document/_Default.php:154 document/_Invoice.php:154
+#, php-format
+msgid "%s, the %s"
+msgstr ""
+
+#: document/_Default.php:184 document/_Invoice.php:184
+msgid "Client No."
+msgstr ""
+
+#: document/_Default.php:187 document/_Invoice.php:187
+msgid "Invoice No."
+msgstr ""
+
+#: document/_Default.php:192 document/_Invoice.php:192
+msgid "Client VAT Reg No."
+msgstr ""
+
+#: document/_Default.php:213 document/_Invoice.php:213
+#, php-format
+msgid "Dear %s,"
+msgstr ""
+
+#: document/_Default.php:243 document/_Invoice.php:243
+msgid "Unit price ({:type})"
+msgstr ""
+
+#: document/_Default.php:243 document/_Default.php:248
+#: document/_Invoice.php:243 document/_Invoice.php:248
+msgid "gross"
+msgstr ""
+
+#: document/_Default.php:243 document/_Default.php:248
+#: document/_Invoice.php:243 document/_Invoice.php:248
+msgid "net"
+msgstr ""
+
+#: document/_Default.php:248 document/_Invoice.php:248
+msgid "Total price ({:type})"
+msgstr ""
+
+#: document/_Default.php:305 document/_Invoice.php:305
+msgid "Total (gross)"
+msgstr ""
+
+#: document/_Default.php:338 document/_Invoice.php:338
+msgid "Total outstanding (gross)"
+msgstr ""
+
+#: document/_InvoiceWithPaper.php:133
+msgid "Client No.: {:number}"
+msgstr ""
+
+#: document/_InvoiceWithPaper.php:140
+msgid "Invoice No.: {:number}"
+msgstr ""
+
+#: document/_InvoiceWithPaper.php:150
+msgid "Client VAT Reg. No.: {:number}"
+msgstr ""
