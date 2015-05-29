@@ -12,8 +12,12 @@
         "php": ">=5.5.0",
         "atelierdisko/base_core": "1.3.*@dev",
         "zendframework/zendpdf": "2.*",
+        "davidpersson/mm": "2.0.*@dev",
         "unionofrad/lithium": "dev-dev as 1.0.0-dev",
         "composer/installers": "1.0.*@stable"
+    },
+    "suggest": {
+      "atelierdisko/finance": "Required for usage of invoice/financial documents."
     },
     "repositories": [
       { "type": "vcs", "url": "git@code.atelierdisko:base_core" }

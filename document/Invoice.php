@@ -1,8 +1,8 @@
 <?php
 /**
- * Atelier Disko Distribution
+ * Base Document
  *
- * Copyright (c) 2014 Atelier Disko - All rights reserved.
+ * Copyright (c) 2015 Atelier Disko - All rights reserved.
  *
  * This software is proprietary and confidential. Redistribution
  * not permitted. Unless required by applicable law or agreed to
