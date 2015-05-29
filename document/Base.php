@@ -22,17 +22,13 @@ use Media_Info;
 
 abstract class Base {
 
-	protected $_template;
+	protected $_template = 'blank.pdf';
 
-	protected $_type = 'Document';
+	protected $_fontSize = 10;
 
-	protected $_subject = 'Your Document';
+	protected $_lineHeight = 13;
 
-	protected $_fontSize = 9;
-
-	protected $_lineHeight = 11;
-
-	protected $_borderHorizontal = [55, 55];
+	protected $_borderHorizontal = [80, 55];
 
 	protected $_pageWidth = 594;
 

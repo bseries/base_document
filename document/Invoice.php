@@ -10,7 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace app\extensions\pdf;
+namespace base_document\document;
 
 use IntlDateFormatter;
 use lithium\g11n\Message;
@@ -18,85 +18,95 @@ use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 
-abstract class InvoiceDocument extends \base_document\document\Base {
-
-	protected $_recipient;
-
-	protected $_invoice;
-
-	protected $_senderContact;
-
-	protected $_type = 'Invoice';
-
-	protected $_subject = 'Your invoice';
-
-	protected $_intro = null;
-
-	protected $_paymentTerms;
-
-	protected $_bankAccount;
-
-	protected $_paypalEmail;
+/**
+ * An invoice document to be printed on a blank paper with no header/footer.
+ */
+class Invoice extends \base_document\document\BaseInvoice {
 
 	protected $_vatRegNo;
 
 	protected $_taxNo;
 
-	protected $_borderHorizontal = [80, 50];
+	protected $_bankAccount;
 
-	protected $_fontSize = 10;
+	protected $_paypalEmail;
 
-	protected $_lineHeight = 13;
+	protected function _compileHeaderFooter() {
+		extract(Message::aliases());
 
-	public function compile() {
-		parent::compile();
+		$backupHeight = $this->_currentHeight;
+		$backup = $this->_borderHorizontal;
 
-		// Meta Data.
-		$this->_author($this->_senderContact['organization'] ?: $this->_senderContact['name']);
-		$this->_creator($this->_senderContact['organization'] ?: $this->_senderContact['name']);
-		$this->_subject($this->_subject);
+		$this->_borderHorizontal = [33, 33];
+		$this->_currentHeight = 800;
 
-		/* Address field */
-		$this->_compileRecipientAddressField();
+		$this->_drawText($this->_sender['name'], 'right');
+		$this->_drawText($this->_sender['street_address'], 'right', [
+			'offsetY' => $this->_skipLines()
+		]);
+		$this->_drawText($this->_sender['postal_code'] . ' ' . $this->_sender['city'], 'right', [
+			'offsetY' => $this->_skipLines()
+		]);
+		$this->_drawText($this->_sender['country'], 'right', [
+			'offsetY' => $this->_skipLines()
+		]);
+		$this->_drawText($this->_sender['phone'], 'right', [
+			'offsetY' => $this->_skipLines(2)
+		]);
+		$this->_drawText($this->_sender['email'], 'right', [
+			'offsetY' => $this->_skipLines()
+		]);
 
-		/* Numbers and type of letter right */
-		$this->_compileType();
-		$this->_compileNumbers();
+		$this->_currentHeight = 90;
 
-		/* Date and City */
-		$this->_compileDateAndCity();
-
-		/* Subject */
-		$this->_compileSubject();
-
-		/* Intro Text */
-		$this->_compileHello();
-
-		$this->_compileIntro();
-
-		/* Costs Table */
-		$this->_compileCostsTableHeader();
-
-		foreach ($this->_invoice->positions() as $position) {
-			$this->_compileCostsTablePosition($position);
+		if ($this->_vatRegNo) {
+			$this->_drawText($t('{:number} — VAT Reg. No.', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale,
+				'number' => $this->_vatRegNo,
+			]), 'right');
 		}
-		$this->_compileCostsTableFooter();
+		if ($this->_taxNo) {
+			$this->_drawText($t('{:number} — Tax No.', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale,
+				'number' => $this->_taxNo,
+			]), 'right', [
+				'offsetY' => $this->_skipLines()
+			]);
+		}
+		if ($this->_bankAccount) {
+			$text  = $this->_bankAccount['holder'] . ', ';
+			$text .= $this->_bankAccount['bank'] . ', ';
+			$text .= 'IBAN ' . $this->_bankAccount['iban'] . ', ';
+			$text .= 'BIC ' . $this->_bankAccount['bic'] . ' ';
+			$text .= '— ' . $t('Bank Account', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale
+			]);
+			$this->_drawText($text, 'right', [
+				'offsetY' => $this->_skipLines()
+			]);
+		}
+		if ($this->_paypalEmail) {
+			$this->_drawText($t('{:email} — PayPal.', [
+				'scope' => 'base_document',
+				'locale' => $this->_recipient->locale,
+				'email' => $this->_paypalEmail,
+			]), 'right', [
+				'offsetY' => $this->_skipLines()
+			]);
+		}
+		$this->_borderHorizontal = $backup;
+		$this->_currentHeight = $backupHeight;
 	}
-
-	protected function _compileHeaderFooter() {}
 
 	// 1.
 	protected function _compileRecipientAddressField() {
 		foreach (explode("\n", $this->_recipient->address()->format('postal')) as $key => $line) {
-			if (!$key) {
-				$this->_setFont($this->_fontSize, true);
-			}
 			$this->_drawText($line, 'left', [
-				'offsetY' => $key ? $this->_skipLines() : 672
+				'offsetY' => $key ? $this->_skipLines() : 685
 			]);
-			if (!$key) {
-				$this->_setFont($this->_fontSize, false);
-			}
 		}
 	}
 
@@ -114,52 +124,69 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		$text = $t('{:city}, the {:date}', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
-			'city' => $this->_senderContact['locality'],
+			'city' => $this->_sender['locality'],
 			'date' => $formatter->format($this->_invoice->date())
 		]);
 		$this->_drawText($text, 'right', [
-			'offsetY' => 550
+			'offsetY' => 560
 		]);
 	}
 
 	// 3.
-	protected function _compileType() {}
+	protected function _compileType() {
+		$backup = $this->_borderHorizontal;
+		$this->_borderHorizontal = [33, 33];
+		$this->_setFont(24, true);
+
+		$this->_drawText(strtoupper($this->_type), 'right', [
+			'offsetY' => 680
+		]);
+
+		$this->_setFont($this->_fontSize);
+		$this->_borderHorizontal = $backup;
+	}
 
 	// 4.
 	protected function _compileNumbers() {
 		extract(Message::aliases());
 
+		$backup = $this->_borderHorizontal;
+		$this->_borderHorizontal = [33, 33];
+
 		$this->_setFont($this->_fontSize, true);
-		$this->_drawText($t('Client No.: {:number}', [
+		$this->_drawText($t('{:number} - Client No.', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
 			'number' => $this->_recipient->number
-		]), 'left', [
-			'offsetY' => 528
+		]), 'right', [
+			'offsetY' => 661
 		]);
-		$this->_drawText($t('Invoice No.: {:number}', [
+		$this->_drawText($t('{:number} - Invoice No.', [
 			'scope' => 'base_document',
 			'locale' => $this->_recipient->locale,
 			'number' => $this->_invoice->number
-		]),  'left', [
+		]),  'right', [
 			'offsetY' => $this->_skipLines()
 		]);
 		$this->_setFont($this->_fontSize, false);
 
 		if ($value = $this->_recipient->vat_reg_no) {
-			$this->_drawText($t('Client VAT Reg. No.: {:number}', [
+			$this->_drawText($t('{:number} - Client VAT Reg. No.', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
 				'number' => $value
-			]), 'left', [
+			]), 'right', [
 				'offsetY' => $this->_skipLines()
 			]);
 		}
+
+		$this->_borderHorizontal = $backup;
 	}
 
 	// 5.
 	protected function _compileSubject() {
-		$this->_setFont(13, true);
+		$this->_setFont($this->_fontSize, true);
+
 		$this->_drawText($this->_subject, 'left', [
 			'offsetY' => 550
 		]);
@@ -167,10 +194,24 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 	}
 
 	// 6.
-	protected function _compileHello() {}
+	protected function _compileHello() {
+		extract(Message::aliases());
+
+		$this->_drawText($t('Dear {:name},', [
+			'scope' => 'base_document',
+			'locale' => $this->_recipient->locale,
+			'name' => $this->_recipient->name
+		]), 'left', [
+			'offsetY' => $this->_skipLines(2)
+		]);
+	}
 
 	//  7.
-	protected function _compileIntro() {}
+	protected function _compileIntro() {
+		$this->_drawText($this->_intro, 'left', [
+			'offsetY' => $this->_skipLines(2)
+		]);
+	}
 
 	// 8.
 	protected function _compileCostsTableHeader() {
@@ -313,9 +354,6 @@ abstract class InvoiceDocument extends \base_document\document\Base {
 		$this->_setFont($this->_fontSize);
 
 		$this->_currentHeight = $this->_skipLines(2.5);
-		$this->_drawText($this->_invoice->tax_note);
-
-		$this->_currentHeight = $this->_skipLines(1);
 		$this->_drawText($this->_invoice->terms);
 
 		$this->_currentHeight = $this->_skipLines(2);
