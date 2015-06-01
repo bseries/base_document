@@ -12,6 +12,7 @@
 
 namespace base_document\document;
 
+use Exception;
 use BadMethodCallException;
 use lithium\core\Libraries;
 use lithium\analysis\Logger;
@@ -69,7 +70,7 @@ abstract class Base {
 	protected function _loadTemplate() {
 		$files = [
 			Libraries::get('app', 'resources') . '/document/' . $this->_template . '.pdf',
-			Libraries::get('base_document', 'resources') . '/document/' . $this->_template . '.pdf'
+			Libraries::get('base_document', 'path') . '/resources/document/' . $this->_template . '.pdf'
 		];
 		foreach ($files as $file) {
 			if (file_exists($file)) {
