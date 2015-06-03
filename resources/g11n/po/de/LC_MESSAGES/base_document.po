@@ -91,9 +91,8 @@ msgstr ""
 "gültig."
 
 #: document/Shipment.php:100
-#, fuzzy
 msgid "{:number} — Shipment No."
-msgstr "{:number} — Kundennr."
+msgstr "{:number} — Lieferungsnr."
 
 #~ msgid "VAT Reg. No."
 #~ msgstr "USt.-IdNr."
