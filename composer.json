@@ -14,7 +14,7 @@
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.0.*@beta",
         "unionofrad/lithium": "1.0.*@dev",
-        "composer/installers": "1.0.*@stable"
+        "composer/installers": "1.*@stable"
     },
     "suggest": {
       "atelierdisko/finance": "Required for usage of invoice/financial documents."
