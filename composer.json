@@ -10,7 +10,7 @@
     },
     "require": {
         "php": ">=5.5.0",
-        "atelierdisko/base_core": "1.3.*",
+        "atelierdisko/base_core": "1.4.*",
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.0.*@beta",
         "unionofrad/lithium": "1.0.*@dev",
