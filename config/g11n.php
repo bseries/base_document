@@ -10,6 +10,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+namespace base_document\config;
+
 use lithium\g11n\Catalog;
 
 Catalog::config([
