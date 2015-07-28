@@ -40,7 +40,7 @@ class Shipment extends \base_document\document\BaseFinancial {
 
 	// 1.
 	protected function _compileRecipientAddressField() {
-		foreach (explode("\n", $this->_recipient->address()->format('postal')) as $key => $line) {
+		foreach (explode("\n", $this->_recipient->address('shipping')->format('postal')) as $key => $line) {
 			$this->_drawText($line, 'left', [
 				'offsetY' => $key ? $this->_skipLines() : 685
 			]);
