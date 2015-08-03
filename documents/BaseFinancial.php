@@ -10,9 +10,9 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace base_document\document;
+namespace base_document\documents;
 
-abstract class BaseFinancial extends \base_document\document\Base {
+abstract class BaseFinancial extends \base_document\documents\Base {
 
 	protected $_layout = 'blank';
 

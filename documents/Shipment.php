@@ -10,12 +10,12 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace base_document\document;
+namespace base_document\documents;
 
 use IntlDateFormatter;
 use lithium\g11n\Message;
 
-class Shipment extends \base_document\document\BaseFinancial {
+class Shipment extends \base_document\documents\BaseFinancial {
 
 	protected $_layout = 'shipment';
 

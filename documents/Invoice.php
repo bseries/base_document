@@ -10,7 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace base_document\document;
+namespace base_document\documents;
 
 use IntlDateFormatter;
 use lithium\g11n\Message;
@@ -21,7 +21,7 @@ use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 /**
  * An invoice document to be printed on a blank paper with no header/footer.
  */
-class Invoice extends \base_document\document\BaseFinancial {
+class Invoice extends \base_document\documents\BaseFinancial {
 
 	protected $_layout = 'invoice';
 

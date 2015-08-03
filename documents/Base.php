@@ -10,7 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace base_document\document;
+namespace base_document\documents;
 
 use Exception;
 use BadMethodCallException;
