@@ -17,7 +17,7 @@ use lithium\g11n\Message;
 
 class Shipment extends \base_document\document\BaseFinancial {
 
-	protected $_template = 'shipment';
+	protected $_layout = 'shipment';
 
 	protected function _compileHeaderFooter() {
 		$backupHeight = $this->_currentHeight;

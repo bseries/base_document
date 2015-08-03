@@ -24,7 +24,7 @@ use Media_Info;
 
 abstract class Base {
 
-	protected $_template = 'blank';
+	protected $_layout = 'blank';
 
 	protected $_fontSize = 10;
 
@@ -56,7 +56,7 @@ abstract class Base {
 	public function compile() {
 		Logger::write('debug', 'Compiling document.');
 
-		$this->__pdf = $this->_loadTemplate();
+		$this->__pdf = $this->_loadLayout();
 		$this->__page = $this->__pdf->pages[0];
 		$this->_setFont($this->_fontSize);
 		$this->_compileHeaderFooter();
@@ -67,17 +67,17 @@ abstract class Base {
 		$this->__pageTemplate = clone $this->__page;
 	}
 
-	protected function _loadTemplate() {
+	protected function _loadLayout() {
 		$files = [
-			Libraries::get('app', 'resources') . '/document/' . $this->_template . '.pdf',
-			Libraries::get('base_document', 'path') . '/resources/document/' . $this->_template . '.pdf'
+			Libraries::get('app', 'path') . '/documents/layouts/' . $this->_layout . '.pdf',
+			Libraries::get('base_document', 'path') . '/documents/layouts/' . $this->_layout . '.pdf'
 		];
 		foreach ($files as $file) {
 			if (file_exists($file)) {
 				return PdfDocument::load($file);
 			}
 		}
-		throw new Exception("No document template `{$this->_template}` found.");
+		throw new Exception("No document layout `{$this->_layout}` found.");
 	}
 
 	// Always use temporary file to get arround mem limit.

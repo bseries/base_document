@@ -14,7 +14,7 @@ namespace base_document\document;
 
 abstract class BaseFinancial extends \base_document\document\Base {
 
-	protected $_template = 'blank';
+	protected $_layout = 'blank';
 
 	protected $_entity;
 
