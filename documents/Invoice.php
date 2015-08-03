@@ -42,18 +42,18 @@ class Invoice extends \base_document\documents\BaseFinancial {
 
 		$this->_currentHeight = 90;
 
-		if ($this->_vatRegNo) {
+		if ($this->_sender->vat_reg_no) {
 			$this->_drawText($t('{:number} — VAT Reg. No.', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
-				'number' => $this->_vatRegNo,
+				'number' => $this->_sender->vat_reg_no,
 			]), 'right');
 		}
-		if ($this->_taxNo) {
+		if ($this->_sender->tax_no) {
 			$this->_drawText($t('{:number} — Tax No.', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
-				'number' => $this->_taxNo,
+				'number' => $this->_sender->tax_no,
 			]), 'right', [
 				'offsetY' => $this->_skipLines()
 			]);

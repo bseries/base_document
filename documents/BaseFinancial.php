@@ -28,10 +28,6 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 
 	protected $_intro;
 
-	protected $_vatRegNo;
-
-	protected $_taxNo;
-
 	protected $_bank = [];
 
 	protected $_paypal = [];
