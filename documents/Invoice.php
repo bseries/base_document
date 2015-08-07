@@ -60,29 +60,6 @@ class Invoice extends \base_document\documents\BaseFinancial {
 			]);
 		}
 
-		if (($bank = Settings::read('service.bank.default')) && isset($bank['holder'])) {
-			$text  = $bank['holder'] . ', ';
-			$text .= $bank['bank'] . ', ';
-			$text .= 'IBAN ' . $bank['iban'] . ', ';
-			$text .= 'BIC ' . $bank['bic'] . ' ';
-			$text .= '— ' . $t('Bank Account', [
-				'scope' => 'base_document',
-				'locale' => $this->_recipient->locale
-			]);
-			$this->_drawText($text, 'right', [
-				'offsetY' => $this->_skipLines()
-			]);
-		}
-		if (($paypal = Settings::read('service.paypal.default')) && isset($paypal['email'])) {
-			$this->_drawText($t('{:email} — PayPal', [
-				'scope' => 'base_document',
-				'locale' => $this->_recipient->locale,
-				'email' => $paypal['email'],
-			]), 'right', [
-				'offsetY' => $this->_skipLines()
-			]);
-		}
-
 		$this->_borderHorizontal = $backup;
 		$this->_currentHeight = $backupHeight;
 	}
