@@ -28,10 +28,6 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 
 	protected $_intro;
 
-	protected $_bank = [];
-
-	protected $_paypal = [];
-
 	public function compile() {
 		parent::compile();
 

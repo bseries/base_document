@@ -12,11 +12,12 @@
 
 namespace base_document\documents;
 
-use IntlDateFormatter;
-use lithium\g11n\Message;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
+use IntlDateFormatter;
+use base_core\extensions\cms\Settings;
+use lithium\g11n\Message;
 
 /**
  * An invoice document to be printed on a blank paper with no header/footer.
@@ -58,11 +59,12 @@ class Invoice extends \base_document\documents\BaseFinancial {
 				'offsetY' => $this->_skipLines()
 			]);
 		}
-		if ($this->_bank) {
-			$text  = $this->_bank['holder'] . ', ';
-			$text .= $this->_bank['bank'] . ', ';
-			$text .= 'IBAN ' . $this->_bank['iban'] . ', ';
-			$text .= 'BIC ' . $this->_bank['bic'] . ' ';
+
+		if (($bank = Settings::read('service.bank.default')) && isset($bank['holder'])) {
+			$text  = $bank['holder'] . ', ';
+			$text .= $bank['bank'] . ', ';
+			$text .= 'IBAN ' . $bank['iban'] . ', ';
+			$text .= 'BIC ' . $bank['bic'] . ' ';
 			$text .= '— ' . $t('Bank Account', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale
@@ -71,15 +73,16 @@ class Invoice extends \base_document\documents\BaseFinancial {
 				'offsetY' => $this->_skipLines()
 			]);
 		}
-		if ($this->_paypal) {
+		if (($paypal = Settings::read('service.paypal.default')) && isset($paypal['email'])) {
 			$this->_drawText($t('{:email} — PayPal', [
 				'scope' => 'base_document',
 				'locale' => $this->_recipient->locale,
-				'email' => $this->_paypal['email'],
+				'email' => $paypal['email'],
 			]), 'right', [
 				'offsetY' => $this->_skipLines()
 			]);
 		}
+
 		$this->_borderHorizontal = $backup;
 		$this->_currentHeight = $backupHeight;
 	}
