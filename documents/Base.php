@@ -35,7 +35,8 @@ abstract class Base {
 
 	protected $_lineHeight = 13;
 
-	protected $_borderHorizontal = [80, 55];
+	// N E S W
+	protected $_margin = [100, 55, 100, 80];
 
 	protected $_pageWidth = 594;
 
@@ -56,20 +57,34 @@ abstract class Base {
 	public function __construct() {
 		$this->_font = new Helvetica();
 		$this->_fontBold = new HelveticaBold();
+
+		if (property_exists($this, '_borderHorizontal')) {
+			trigger_error(
+				'The _borderHorizontal property is deprecated in favor of _margin.',
+				E_USER_DEPRECATED
+			);
+		}
+		if (method_exists($this, '_compileHeaderFooter')) {
+			trigger_error(
+				'_compileHeaderFooter is deprecated in favor of _preparePage.',
+				E_USER_DEPRECATED
+			);
+		}
 	}
 
 	public function compile() {
 		Logger::write('debug', 'Compiling document.');
 
+		$this->_currentHeight = $this->_margin[0];
+
 		$this->__pdf = $this->_loadLayout();
 		$this->__page = $this->__pdf->pages[0];
-		$this->_setFont($this->_fontSize);
-		$this->_compileHeaderFooter();
-
-		// Cloning after inserting header and footer, so
-		// that from now on we don't have to insert header/footer
-		// on each new page.
 		$this->__pageTemplate = clone $this->__page;
+
+		// Must come after initializing __page.
+		$this->_setFont($this->_fontSize);
+
+		$this->_preparePage();
 	}
 
 	protected function _loadLayout() {
@@ -112,7 +127,7 @@ abstract class Base {
 		throw new BadMethodCallException("Unknown method $method.");
 	}
 
-	abstract protected function _compileHeaderFooter();
+	protected function _preparePage() {}
 
 	/* Metadata */
 
@@ -135,10 +150,19 @@ abstract class Base {
 	/* Basic methods */
 
 	protected function _nextPage() {
+		$this->_currentHeight = $this->_margin[0];
+
 		$this->__page = clone $this->__pageTemplate;
 		$this->__pdf->pages[] = $this->__page;
+
+		// Must come after initializing __page.
 		$this->_setFont($this->_fontSize);
-		$this->_currentHeight = $this->_heightHeader();
+
+		$this->_preparePage();
+	}
+
+	protected function _pages() {
+		return $this->__pdf->pages;
 	}
 
 	protected function _width($text) {
@@ -196,7 +220,7 @@ abstract class Base {
 
 		} elseif ($align == 'left') {
 			list($offsetX, $offsetY) = $this->_alignText($text, 'left', $options);
-			$maxWidth = $this->_pageWidth - (array_sum($this->_borderHorizontal));
+			$maxWidth = $this->_pageWidth - ($this->_margin[1] + $this->_margin[3]);
 
 			if ($this->_width($text) > $maxWidth) {
 				$text = wordwrap($text, 100, "\n", false);
@@ -232,27 +256,40 @@ abstract class Base {
 			$range['width'] = $range['width'] ?: $this->_pageWidth;
 
 			return [
-				$range['width'] - $this->_width($text) - $this->_borderHorizontal[1] + $range['offsetX'],
+				$range['width'] - $this->_width($text) - $this->_margin[1] + $range['offsetX'],
 				$range['offsetY']
 			];
 		} else {
-			$range['width'] = $range['width'] ?: $this->_pageWidth - (array_sum($this->_borderHorizontal));
+			$range['width'] = $range['width'] ?: $this->_pageWidth - ($this->_margin[1] + $this->_margin[3]);
 
 			return [
-				$this->_borderHorizontal[0] + $range['offsetX'],
+				$this->_margin[3] + $range['offsetX'],
 				$range['offsetY']
 			];
 		}
 	}
 
-	/* Drawing */
-	protected function _drawHorizontalLine() {
-		$this->__page->drawLine(
-			$this->_borderHorizontal[0], ceil($this->_currentHeight + ($this->_lineHeight / 2)),
-			$this->_pageWidth - $this->_borderHorizontal[1] + 5, ceil($this->_currentHeight + ($this->_lineHeight / 2))
+	/* Transformations */
+
+	protected function _rotate($angle = 90) {
+		$this->__page->rotate(
+			$this->__page->getWidth() / 2,
+			$this->__page->getHeight() / 2,
+			deg2rad($angle)
 		);
 	}
 
+	/* Drawing */
+
+	protected function _drawHorizontalLine($thickness = 0.5, array $dashingPattern = []) {
+		$this->__page->setLineWidth($thickness);
+		$this->__page->setLineDashingPattern($dashingPattern);
+
+		$this->__page->drawLine(
+			$this->_margin[3], ceil($this->_currentHeight + ($this->_lineHeight / 2)),
+			$this->_pageWidth - $this->_margin[1] + 5, ceil($this->_currentHeight + ($this->_lineHeight / 2))
+		);
+	}
 
 	/* Image Handling */
 
