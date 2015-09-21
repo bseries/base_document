@@ -199,6 +199,7 @@ abstract class Base {
 	// $align may be numeric then it is used as offsetX
 	protected function _drawText($text, $align = 'left', array $options = []) {
 		$options += [
+			'width' => $this->_pageWidth,
 			'offsetY' => $this->_currentHeight
 		];
 		if (strpos($text, "\n") !== false) {
@@ -220,23 +221,58 @@ abstract class Base {
 
 		} elseif ($align == 'left') {
 			list($offsetX, $offsetY) = $this->_alignText($text, 'left', $options);
-			$maxWidth = $this->_pageWidth - ($this->_margin[1] + $this->_margin[3]);
+			$lines = $this->_wrapText($text, $options['width']);
 
-			if ($this->_width($text) > $maxWidth) {
-				$text = wordwrap($text, 100, "\n", false);
+			if (count($lines) > 1) {
+				// Ensure lines skip only between lines.
+				$this->__page->drawText(array_shift($lines), $offsetX, $offsetY, $this->_encoding);
 
-				$tokens = explode("\n", $text);
-				foreach ($tokens as $token) {
-					$this->__page->drawText($token, $offsetX, $offsetY, $this->_encoding);
+				while ($line = array_shift($lines)) {
 					$offsetY -= $this->_lineHeight; // Skip 1 line.
+					$this->__page->drawText($line, $offsetX, $offsetY, $this->_encoding);
+				}
+				foreach ($lines as $line) {
 				}
 			} else {
-				$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
+				$this->__page->drawText(current($lines), $offsetX, $offsetY, $this->_encoding);
 			}
 		} else {
 			throw new Exception("Invalid text alignment {$align}.");
 		}
 		$this->_currentHeight = $offsetY;
+	}
+
+	// Wraps text inside given max width.
+	//
+	// Adds words to line one by one until the line
+	// exceeds the max width. Then starts new line.
+	protected function _wrapText($text, $maxWidth) {
+		$results = [];
+
+		if ($this->_width($text) <= $maxWidth) {
+			return $results = [$text];
+		}
+		$words = explode(' ', $text);
+
+		$line = '';
+		while (true) {
+			if (!$words) {
+				$results[] = $line;
+				break;
+			}
+			$word = array_shift($words);
+
+			if ($this->_width($line . ' ' . $word) <= $maxWidth) {
+				if ($line) {
+					$line .= ' '; // Prevent spaces at line start.
+				}
+				$line .= $word;
+				continue;
+			}
+			$results[] = $line;
+			$line = $word;
+		}
+		return $results;
 	}
 
 	protected function _alignText($text, $align, array $range = []) {
