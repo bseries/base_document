@@ -17,36 +17,38 @@
 
 namespace base_document\documents;
 
-use Exception;
 use BadMethodCallException;
-use lithium\core\Libraries;
-use lithium\analysis\Logger;
+use Exception;
+use Media_Info;
 use ZendPdf\PdfDocument;
 use ZendPdf\Resource\Font\Simple\Standard\Helvetica;
 use ZendPdf\Resource\Font\Simple\Standard\HelveticaBold;
 use ZendPdf\Resource\Image\ImageFactory;
-use Media_Info;
+use lithium\analysis\Logger;
+use lithium\core\Libraries;
 
+// Contains mostly document internal methods. Base-subclasses may
+// define abstract methods.
 abstract class Base {
 
 	protected $_layout = 'blank';
-
-	protected $_fontSize = 10;
-
-	protected $_lineHeight = 13;
 
 	// N E S W
 	protected $_margin = [100, 55, 100, 80];
 
 	protected $_pageWidth = 594;
 
-	protected $_currentHeight;
+	protected $_fontSize = 10;
+
+	protected $_lineHeight = 13;
 
 	protected $_font;
 
 	protected $_fontBold;
 
 	protected $_encoding = 'UTF-8';
+
+	protected $_currentHeight;
 
 	private $__pdf;
 
@@ -100,6 +102,8 @@ abstract class Base {
 		throw new Exception("No document layout `{$this->_layout}` found.");
 	}
 
+	protected function _prepareLayout() {}
+
 	// Always use temporary file to get arround mem limit.
 	public function render($stream = null) {
 		Logger::write('debug', 'Rendering document.');
@@ -126,8 +130,6 @@ abstract class Base {
 		}
 		throw new BadMethodCallException("Unknown method $method.");
 	}
-
-	protected function _preparePage() {}
 
 	/* Metadata */
 
