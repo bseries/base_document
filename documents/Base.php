@@ -52,34 +52,8 @@ abstract class Base {
 
 	private $__pageTemplate;
 
-	/* Styles */
-
-	protected function _addStyle($name, array $definition) {
-		$this->_styles[$name] = $definition + [
-			'fontFamily' => new Helvetica(),
-			'fontSize' => 10,
-			'lineHeight' => 13
-		];
-	}
-
-	protected function _useStyle($name) {
-		$this->_currentStyle = $this->_style[$name];
-
-		$this->__page->setFont(
-			$this->_currentStyle['fontFamily'],
-			$this->_currentStyle['fontSize']
-		);
-	}
-
 	public function __construct() {
-		$this->_addStyle('gamma', [
-			'fontFamily' => new Helvetica(),
-			'fontSize' => 10
-		]);
-		$this->_addStyle('gamma--bold', [
-			'fontFamily' => new HelveticaBold(),
-			'fontSize' => 10
-		]);
+		$this->_defineStyles();
 
 		if (property_exists($this, '_borderHorizontal')) {
 			trigger_error(
@@ -435,6 +409,48 @@ abstract class Base {
 		$result = $result || $media->height() >= ($bH * 1);
 
 		return $result;
+	}
+
+	/* Styles */
+
+	protected function _defineStyles() {
+		$this->_addStyle('beta', [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 24
+		]);
+		$this->_addStyle('beta--bold', [
+			'fontFamily' => new HelveticaBold(),
+			'fontSize' => 24
+		]);
+		$this->_addStyle('gamma', [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 10
+		]);
+		$this->_addStyle('gamma--bold', [
+			'fontFamily' => new HelveticaBold(),
+			'fontSize' => 10
+		]);
+		$this->_addStyle('epsilon', [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 7
+		]);
+	}
+
+	protected function _addStyle($name, array $definition) {
+		$this->_styles[$name] = $definition + [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 10,
+			'lineHeight' => 13
+		];
+	}
+
+	protected function _useStyle($name) {
+		$this->_currentStyle = $this->_style[$name];
+
+		$this->__page->setFont(
+			$this->_currentStyle['fontFamily'],
+			$this->_currentStyle['fontSize']
+		);
 	}
 }
 
