@@ -445,7 +445,7 @@ abstract class Base {
 	}
 
 	protected function _useStyle($name) {
-		$this->_currentStyle = $this->_style[$name];
+		$this->_currentStyle = $this->_styles[$name];
 
 		$this->__page->setFont(
 			$this->_currentStyle['fontFamily'],
