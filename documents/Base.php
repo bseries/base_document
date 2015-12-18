@@ -38,13 +38,9 @@ abstract class Base {
 
 	protected $_pageWidth = 594;
 
-	protected $_fontSize = 10;
+	protected $_styles = [];
 
-	protected $_lineHeight = 13;
-
-	protected $_font;
-
-	protected $_fontBold;
+	protected $_currentStyle = null;
 
 	protected $_encoding = 'UTF-8';
 
@@ -56,9 +52,34 @@ abstract class Base {
 
 	private $__pageTemplate;
 
+	/* Styles */
+
+	protected function _addStyle($name, array $definition) {
+		$this->_styles[$name] = $definition + [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 10,
+			'lineHeight' => 13
+		];
+	}
+
+	protected function _useStyle($name) {
+		$this->_currentStyle = $this->_style[$name];
+
+		$this->__page->setFont(
+			$this->_currentStyle['fontFamily'],
+			$this->_currentStyle['fontSize']
+		);
+	}
+
 	public function __construct() {
-		$this->_font = new Helvetica();
-		$this->_fontBold = new HelveticaBold();
+		$this->_addStyle('gamma', [
+			'fontFamily' => new Helvetica(),
+			'fontSize' => 10
+		]);
+		$this->_addStyle('gamma--bold', [
+			'fontFamily' => new HelveticaBold(),
+			'fontSize' => 10
+		]);
 
 		if (property_exists($this, '_borderHorizontal')) {
 			trigger_error(
@@ -84,7 +105,7 @@ abstract class Base {
 		$this->__pageTemplate = clone $this->__page;
 
 		// Must come after initializing __page.
-		$this->_setFont($this->_fontSize);
+		$this->_useStyle('gamma');
 
 		$this->_preparePage();
 	}
@@ -158,7 +179,7 @@ abstract class Base {
 		$this->__pdf->pages[] = $this->__page;
 
 		// Must come after initializing __page.
-		$this->_setFont($this->_fontSize);
+		$this->_useStyle('gamma');
 
 		$this->_preparePage();
 	}
@@ -185,17 +206,9 @@ abstract class Base {
 
 	/* Text Handling */
 
-	protected function _setFont($size, $bold = false) {
-		if ($bold) {
-			$this->__page->setFont($this->_fontBold, $size);
-		} else {
-			$this->__page->setFont($this->_font, $size);
-		}
-	}
-
 	protected function _skipLines($number = 1) {
 		$offsetY = $this->_currentHeight;
-		return $offsetY - ($number * $this->_lineHeight);
+		return $offsetY - ($number * $this->_currentStyle['lineHeight']);
 	}
 
 	// $align may be numeric then it is used as offsetX
@@ -209,7 +222,7 @@ abstract class Base {
 
 			foreach ($text as $t) {
 				$this->_drawText($t, $align, $options);
-				$options['offsetY'] -= $this->_lineHeight; // Skip 1 line.
+				$options['offsetY'] -= $this->_currentStyle['lineHeight']; // Skip 1 line.
 			}
 			return true;
 		}
@@ -230,7 +243,7 @@ abstract class Base {
 				$this->__page->drawText(array_shift($lines), $offsetX, $offsetY, $this->_encoding);
 
 				while ($line = array_shift($lines)) {
-					$offsetY -= $this->_lineHeight; // Skip 1 line.
+					$offsetY -= $this->_currentStyle['lineHeight']; // Skip 1 line.
 					$this->__page->drawText($line, $offsetX, $offsetY, $this->_encoding);
 				}
 				foreach ($lines as $line) {
@@ -324,8 +337,8 @@ abstract class Base {
 		$this->__page->setLineDashingPattern($dashingPattern);
 
 		$this->__page->drawLine(
-			$this->_margin[3], ceil($this->_currentHeight + ($this->_lineHeight / 2)),
-			$this->_pageWidth - $this->_margin[1] + 5, ceil($this->_currentHeight + ($this->_lineHeight / 2))
+			$this->_margin[3], ceil($this->_currentHeight + ($this->_currentStyle['lineHeight'] / 2)),
+			$this->_pageWidth - $this->_margin[1] + 5, ceil($this->_currentHeight + ($this->_currentStyle['lineHeight'] / 2))
 		);
 	}
 
