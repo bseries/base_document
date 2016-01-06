@@ -192,7 +192,7 @@ abstract class Base {
 			'offsetY' => $this->_currentHeight
 		];
 		if (strpos($text, "\n") !== false) {
-			$text = explode("\n", $text);
+			$text = explode("\n", str_replace("\r\n", "\n", $text));
 
 			foreach ($text as $t) {
 				$this->_drawText($t, $align, $options);
