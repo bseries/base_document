@@ -36,7 +36,8 @@ abstract class Base {
 	// N E S W
 	protected $_margin = [100, 55, 100, 80];
 
-	protected $_pageWidth = 594;
+	protected $_pageWidth = 595;
+	// height 842 pixel
 
 	protected $_styles = [];
 
@@ -219,8 +220,6 @@ abstract class Base {
 				while ($line = array_shift($lines)) {
 					$offsetY -= $this->_currentStyle['lineHeight']; // Skip 1 line.
 					$this->__page->drawText($line, $offsetX, $offsetY, $this->_encoding);
-				}
-				foreach ($lines as $line) {
 				}
 			} else {
 				$this->__page->drawText(current($lines), $offsetX, $offsetY, $this->_encoding);
