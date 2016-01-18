@@ -188,44 +188,35 @@ abstract class Base {
 
 	// $align may be numeric then it is used as offsetX
 	protected function _drawText($text, $align = 'left', array $options = []) {
+		$text = str_replace("\r\n", "\n", $text); // Normalize line endings.
+
 		$options += [
 			'width' => $this->_pageWidth,
 			'offsetY' => $this->_currentHeight
 		];
-		if (strpos($text, "\n") !== false) {
-			$text = explode("\n", str_replace("\r\n", "\n", $text));
 
-			foreach ($text as $t) {
-				$this->_drawText($t, $align, $options);
-				$options['offsetY'] -= $this->_currentStyle['lineHeight']; // Skip 1 line.
-			}
-			return true;
+		list($offsetX, $offsetY) = $this->_alignText($text, $align, $options);
+
+		$unwrapped = explode("\n", $text);
+		$wrapped = [];
+
+		foreach ($unwrapped as $line) {
+			$wrapped = array_merge(
+				$wrapped,
+				$this->_wrapText($line, $options['width'])
+			);
 		}
-		if ($align == 'center') {
-			list($offsetX, $offsetY) = $this->_alignText($text, 'center', $options);
-			$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
 
-		} elseif ($align == 'right') {
-			list($offsetX, $offsetY) = $this->_alignText($text, 'right', $options);
-			$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
+		// Ensure lines skip only between lines.
+		$this->__page->drawText(array_shift($wrapped), $offsetX, $offsetY, $this->_encoding);
 
-		} elseif ($align == 'left') {
-			list($offsetX, $offsetY) = $this->_alignText($text, 'left', $options);
-			$lines = $this->_wrapText($text, $options['width']);
+		// Empty lines are returned as an empty string (falsey).
+		while (($line = array_shift($wrapped)) !== null) {
+			$offsetY -= $this->_currentStyle['lineHeight']; // Skip 1 line.
 
-			if (count($lines) > 1) {
-				// Ensure lines skip only between lines.
-				$this->__page->drawText(array_shift($lines), $offsetX, $offsetY, $this->_encoding);
-
-				while ($line = array_shift($lines)) {
-					$offsetY -= $this->_currentStyle['lineHeight']; // Skip 1 line.
-					$this->__page->drawText($line, $offsetX, $offsetY, $this->_encoding);
-				}
-			} else {
-				$this->__page->drawText(current($lines), $offsetX, $offsetY, $this->_encoding);
+			if ($line) {
+				$this->__page->drawText($line, $offsetX, $offsetY, $this->_encoding);
 			}
-		} else {
-			throw new Exception("Invalid text alignment {$align}.");
 		}
 		$this->_currentHeight = $offsetY;
 	}
@@ -283,7 +274,7 @@ abstract class Base {
 				$range['width'] - $this->_width($text) - $this->_margin[1] + $range['offsetX'],
 				$range['offsetY']
 			];
-		} else {
+		} elseif ($align === 'left') {
 			$range['width'] = $range['width'] ?: $this->_pageWidth - ($this->_margin[1] + $this->_margin[3]);
 
 			return [
@@ -291,6 +282,7 @@ abstract class Base {
 				$range['offsetY']
 			];
 		}
+		throw new Exception("Invalid text alignment {$align}.");
 	}
 
 	/* Transformations */
