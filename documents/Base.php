@@ -124,10 +124,14 @@ abstract class Base {
 			$this->{"_{$method}"} = $params[0];
 			return $this;
 		}
+		if (method_exists($this, '_' . $method)) {
+			$this->{"_{$method}"}($params[0]);
+			return $this;
+		}
 		throw new BadMethodCallException("Unknown method $method.");
 	}
 
-	/* Metadata */
+	/* Metadata methods: must be called after compile() */
 
 	protected function _author($text) {
 		$this->__pdf->properties['Author'] = $text;
