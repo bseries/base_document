@@ -133,19 +133,19 @@ abstract class Base {
 
 	/* Metadata methods: must be called after compile() */
 
-	protected function _author($text) {
+	protected function metaAuthor($text) {
 		$this->__pdf->properties['Author'] = $text;
 	}
 
-	protected function _title($text) {
+	protected function metaTitle($text) {
 		$this->__pdf->properties['Title'] = $text;
 	}
 
-	protected function _subject($text) {
+	protected function metaSubject($text) {
 		$this->__pdf->properties['Subject'] = $text;
 	}
 
-	protected function _creator($text) {
+	protected function metaCreator($text) {
 		$this->__pdf->properties['Creator'] = $text;
 	}
 
@@ -446,6 +446,40 @@ abstract class Base {
 			$this->_currentStyle['fontFamily'],
 			$this->_currentStyle['fontSize']
 		);
+	}
+
+	/* Depreacted / BC */
+
+	protected function _author($text) {
+		trigger_error(
+			__METHOD__  . ' is deprecated use public metaXXXX() method instead',
+			E_USER_DEPRECATED
+		);
+		return $this->metaAuthor($text);
+	}
+
+	protected function _title($text) {
+		trigger_error(
+			__METHOD__  . ' is deprecated use public metaXXXX() method instead',
+			E_USER_DEPRECATED
+		);
+		return $this->metaTitle($text);
+	}
+
+	protected function _subject($text) {
+		trigger_error(
+			__METHOD__  . ' is deprecated use public metaXXXX() method instead',
+			E_USER_DEPRECATED
+		);
+		return $this->metaSubject($text);
+	}
+
+	protected function _creator($text) {
+		trigger_error(
+			__METHOD__  . ' is deprecated use public metaXXXX() method instead',
+			E_USER_DEPRECATED
+		);
+		return $this->metaCreator($text);
 	}
 }
 
