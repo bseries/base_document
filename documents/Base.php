@@ -135,18 +135,22 @@ abstract class Base {
 
 	public function metaAuthor($text) {
 		$this->__pdf->properties['Author'] = $text;
+		return $this;
 	}
 
 	public function metaTitle($text) {
 		$this->__pdf->properties['Title'] = $text;
+		return $this;
 	}
 
 	public function metaSubject($text) {
 		$this->__pdf->properties['Subject'] = $text;
+		return $this;
 	}
 
 	public function metaCreator($text) {
 		$this->__pdf->properties['Creator'] = $text;
+		return $this;
 	}
 
 	/* Basic methods */
