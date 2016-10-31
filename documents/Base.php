@@ -133,19 +133,19 @@ abstract class Base {
 
 	/* Metadata methods: must be called after compile() */
 
-	protected function metaAuthor($text) {
+	public function metaAuthor($text) {
 		$this->__pdf->properties['Author'] = $text;
 	}
 
-	protected function metaTitle($text) {
+	public function metaTitle($text) {
 		$this->__pdf->properties['Title'] = $text;
 	}
 
-	protected function metaSubject($text) {
+	public function metaSubject($text) {
 		$this->__pdf->properties['Subject'] = $text;
 	}
 
-	protected function metaCreator($text) {
+	public function metaCreator($text) {
 		$this->__pdf->properties['Creator'] = $text;
 	}
 
