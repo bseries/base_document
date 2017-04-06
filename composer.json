@@ -14,7 +14,7 @@
         "php": ">=5.5.0",
         "atelierdisko/base_core": "1.5.*@dev",
         "zendframework/zendpdf": "2.*@stable",
-        "davidpersson/mm": "2.1.*@beta",
+        "davidpersson/mm": "2.*@stable || 2.2@alpha",
         "unionofrad/lithium": "1.1.*@dev",
         "composer/installers": "1.*@stable"
     },
