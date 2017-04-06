@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "atelierdisko/base_core": "1.5.*",
+        "atelierdisko/base_core": "1.5.*@dev",
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.1.*@beta",
         "unionofrad/lithium": "1.1.*@dev",
