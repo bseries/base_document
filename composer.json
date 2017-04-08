@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": "^5.5 || ^7.0",
         "atelierdisko/base_core": "1.5.*@dev",
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.*@stable || 2.2@alpha",
