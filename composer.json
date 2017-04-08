@@ -1,13 +1,13 @@
 {
     "name": "atelierdisko/base_document",
     "description": "Document functionality for Bento.",
-    "homepage": "http://atelierdisko.de",
+    "homepage": "https://atelierdisko.de",
     "type": "lithium-library",
     "license": "proprietary",
     "authors": [
         {
           "name": "Atelier Disko",
-          "homepage": "http://atelierdisko.de"
+          "homepage": "https://atelierdisko.de"
         }
     ],
     "require": {

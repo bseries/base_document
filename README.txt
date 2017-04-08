@@ -20,7 +20,7 @@ reserved and licensed under the AD General Software License v1.
 -- WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --
 
 You should have received a copy of the AD General Software
-License. If not, see http://atelierdisko.de/licenses.
+License. If not, see https://atelierdisko.de/licenses.
 
 This library may contain code from open source projects with a different
 license. Please see the respective fileheaders for more information.
