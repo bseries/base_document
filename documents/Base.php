@@ -19,7 +19,7 @@ namespace base_document\documents;
 
 use BadMethodCallException;
 use Exception;
-use Media_Info;
+use mm\Media\Info;
 use ZendPdf\PdfDocument;
 use ZendPdf\Resource\Font\Simple\Standard\Helvetica;
 use ZendPdf\Resource\Font\Simple\Standard\HelveticaBold;
@@ -331,7 +331,7 @@ abstract class Base {
 		$imageWidth = $image->getPixelWidth();
 		$imageHeight = $image->getPixelHeight();
 
-		$media = Media_Info::factory(['source' => $file]);
+		$media = Info::factory(['source' => $file]);
 
 		list($width, $height) = $this->_imageMaxDimensions(
 			$media->width(),
@@ -400,7 +400,7 @@ abstract class Base {
 	}
 
 	protected function _checkImageResolution($file, $box) {
-		$media = Media_Info::factory(['source' => $file]);
+		$media = Info::factory(['source' => $file]);
 
 		list($bW, $bH) = $box;
 
