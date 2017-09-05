@@ -86,11 +86,58 @@ abstract class Base {
 	}
 
 	protected function _loadLayout() {
-		$files = [
-			Libraries::get('app', 'path') . '/documents/layouts/' . $this->_layout . '.pdf',
-			Libraries::get('base_document', 'path') . '/documents/layouts/' . $this->_layout . '.pdf'
-		];
-		foreach ($files as $file) {
+		$libraries = array_filter(Libraries::get(), function($l) {
+			return preg_match('/^((base|cms|billing|ecommerce)_|app)/', $l['name']);
+		});
+		$priorities = array_flip([
+			'base',
+			'cms',
+			'billing',
+			'ecommerce'
+		]);
+		uasort($libraries, function($a, $b) use ($priorities) {
+			// Keep app last...
+			if ($a['name'] === 'app') {
+				return 1;
+			}
+			if ($b['name'] === 'app') {
+				return -1;
+			}
+			if ($a['name'] === $b['name']) {
+				return 0;
+			}
+
+			preg_match('/^([a-z]+)_([a-z]+)$/', $a['name'], $ma);
+			preg_match('/^([a-z]+)_([a-z]+)$/', $b['name'], $mb);
+
+			if ($ma[2] === 'core' && $mb[2] === 'core') {
+				if ($priorities[$ma[1]] > $priorities[$mb[1]]) {
+					return -1;
+				}
+				if ($priorities[$ma[1]] < $priorities[$mb[1]]) {
+					// billing_core after ecommere_core
+					return 1;
+				}
+			}
+			if ($ma[2] === 'core') {
+				return 1;
+			}
+			if ($mb[2] === 'core') {
+				return -1;
+			}
+			if ($priorities[$ma[1]] > $priorities[$mb[1]]) {
+				return -1;
+			}
+			if ($priorities[$ma[1]] < $priorities[$mb[1]]) {
+				// billing_core after ecommere_core
+				return 1;
+			}
+			// cms_social after cms_banner
+			return strcmp($a['name'], $b['name']);
+		});
+		foreach (array_reverse($libraries) as $library) {
+			$file = $library['path'] . '/documents/layouts/' . $this->_layout . '.pdf';
+
 			if (file_exists($file)) {
 				return PdfDocument::load($file);
 			}
