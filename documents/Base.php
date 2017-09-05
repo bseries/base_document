@@ -107,8 +107,8 @@ abstract class Base {
 				return 0;
 			}
 
-			preg_match('/^([a-z]+)_([a-z]+)$/', $a['name'], $ma);
-			preg_match('/^([a-z]+)_([a-z]+)$/', $b['name'], $mb);
+			preg_match('/^([a-z]+)_([a-z_]+)$/', $a['name'], $ma);
+			preg_match('/^([a-z]+)_([a-z_]+)$/', $b['name'], $mb);
 
 			if ($ma[2] === 'core' && $mb[2] === 'core') {
 				if ($priorities[$ma[1]] > $priorities[$mb[1]]) {
