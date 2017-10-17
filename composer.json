@@ -1,18 +1,11 @@
 {
-    "name": "atelierdisko/base_document",
+    "name": "bseries/base_document",
     "description": "Document functionality for Bento.",
-    "homepage": "https://atelierdisko.de",
     "type": "lithium-library",
-    "license": "proprietary",
-    "authors": [
-        {
-          "name": "Atelier Disko",
-          "homepage": "https://atelierdisko.de"
-        }
-    ],
+    "license": ["BSD-3-Clause"],
     "require": {
         "php": "^5.5 || ^7.0",
-        "atelierdisko/base_core": "1.5.*@dev",
+        "bseries/base_core": "1.5.*@dev",
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.2@dev || ^2.2",
         "unionofrad/lithium": "^1.1",
@@ -20,8 +13,5 @@
     },
     "suggest": {
       "atelierdisko/finance": "Required for usage of invoice/financial documents."
-    },
-    "repositories": [
-      { "type": "vcs", "url": "git@code.atelierdisko:base_core" }
-    ]
+    }
 }
