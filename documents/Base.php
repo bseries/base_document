@@ -139,23 +139,94 @@ abstract class Base {
 
 	protected function _prepareLayout() {}
 
-	// Always use temporary file to get arround mem limit.
-	public function render($stream = null) {
-		Logger::write('debug', 'Rendering document.');
+	// Renders the document out ane echoes it, or when a stream handle
+	// is given renders it into the stream.
+	//
+	// Uses temporary files to get arround memory limits.
+	public function render($targetStream = null) {
+		Logger::write('debug', 'Rendering document...');
 
-		if ($stream) {
-			$this->__pdf->render(false, $stream);
-		} else {
-			$stream = fopen('php://temp', 'wb');
+		$this->__pdf->render(false, $temporary = fopen('php://temp', 'wb'));
 
-			$this->__pdf->render(false, $stream);
-			rewind($stream);
-
-			echo stream_get_contents($stream);
-
-			fclose($stream);
-		}
 		Logger::write('debug', 'Document has been rendered successfully.');
+
+		if (PROJECT_HAS_GHOSTSCRIPT) {
+			rewind($temporary);
+			$optimized = fopen('php://temp', 'w+');
+
+			if ($this->_optimize($temporary, $optimized, 'screen')) {
+				fclose($temporary);
+				$temporary = $optimized;
+			} else {
+				Logger::debug('Optimization failed; can continue with original.');
+				fclose($optimized);
+				// Keep temporary when optimization failed, we
+				// still can continue. Optimization is optional.
+			}
+		}
+
+		rewind($temporary);
+
+		if ($targetStream) {
+			stream_copy_to_stream($temporary, $targetStream);
+		} else {
+			echo stream_get_contents($temporary);
+		}
+
+		fclose($temporary);
+	}
+
+	// http://www.ghostscript.com/doc/9.05/Ps2pdf.htm#Options
+	// http://milan.kupcevic.net/ghostscript-ps-pdf/
+	// https://raw.github.com/betweenbrain/linux-stuff/master/shell-scripts/optimize-pdf.sh
+	protected function _optimize($source, $target, $profile = 'screen') {
+		Logger::write('debug', "Optimizing document using profile `{$profile}`...");
+
+		// screen   (screen-view-only quality, 72 dpi images)
+		// ebook    (low quality, 150 dpi images)
+		// printer  (high quality, 300 dpi images)
+		// prepress (high quality, color preserving, 300 dpi imgs)
+		// default  (almost identical to screen)
+
+		$command  = "gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/{$profile}";
+
+		if ($profile == 'screen') {
+			$command .= ' -dColorConversionStrategy=/LeaveUnchanged';
+			$command .= ' -dColorImageDownsampleType=/Bicubic';
+			$command .= ' -dColorImageResolution=100';
+			$command .= ' -dEmbedAllFonts=true';
+		}
+		$command .= " -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%stdout -_";
+
+		$descr = [
+			0 => $source,
+			1 => $target,
+			2 => ['pipe', 'w']
+		];
+		$process = proc_open($command, $descr, $pipes);
+
+		$error  = stream_get_contents($pipes[2]);
+		fclose($pipes[2]);
+		$return = proc_close($process);
+
+		if ($return != 0) {
+			$message  = "Command `{$command}` returned `{$return}`:";
+			$message .= "\nError output was:\n" . ($error ?: 'n/a');
+			Logger::write('notice', $message);
+
+			return false;
+		}
+		$sourceStat = fstat($source);
+		$targetStat = fstat($target);
+		Logger::write('debug', sprintf(
+			"Optimized document file `%s` (%.2f%% reduction, %.2f MB -> %.2f MB).",
+			'stream',
+			100 - (($targetStat['size'] / $sourceStat['size']) * 100),
+			$sourceStat['size'] / MEGABYTE,
+			$targetStat['size'] / MEGABYTE
+		));
+
+		return true;
 	}
 
 	public function __call($method, $params) {
