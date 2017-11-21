@@ -222,8 +222,8 @@ abstract class Base {
 			"Optimized document file `%s` (%.2f%% reduction, %.2f MB -> %.2f MB).",
 			'stream',
 			100 - (($targetStat['size'] / $sourceStat['size']) * 100),
-			$sourceStat['size'] / MEGABYTE,
-			$targetStat['size'] / MEGABYTE
+			$sourceStat['size'] / 1000000,
+			$targetStat['size'] / 1000000
 		));
 
 		return true;
