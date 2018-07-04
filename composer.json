@@ -4,12 +4,12 @@
     "type": "lithium-library",
     "license": ["BSD-3-Clause"],
     "require": {
-        "php": "^5.5 || ^7.0",
         "bseries/base_core": "1.5.*@dev",
-        "zendframework/zendpdf": "2.*@stable",
-        "davidpersson/mm": "2.2@dev || ^2.2",
+        "composer/installers": "^1",
+        "davidpersson/mm": "^2.2",
+        "php": "^7",
         "unionofrad/lithium": "^1.2",
-        "composer/installers": "1.*@stable"
+        "zendframework/zendpdf": "^2"
     },
     "suggest": {
       "atelierdisko/finance": "Required for usage of invoice/financial documents."
