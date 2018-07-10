@@ -5,7 +5,7 @@
     "license": ["BSD-3-Clause"],
     "require": {
         "php": "^5.5 || ^7.0",
-        "bseries/base_core": "1.5.*@dev",
+        "bseries/base_core": "^1.5",
         "zendframework/zendpdf": "2.*@stable",
         "davidpersson/mm": "2.2@dev || ^2.2",
         "unionofrad/lithium": "^1.2",
